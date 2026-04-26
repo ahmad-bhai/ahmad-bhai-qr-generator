@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AHMAD BHAI - QR API</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root { --primary: #00f2fe; --accent: #8646B4; --bg: #050a14; --glass: rgba(255, 255, 255, 0.05); }
+  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
+  body { background: var(--bg); color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+
+  .container { 
+    background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); 
+    padding: 25px; border-radius: 25px; width: 100%; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin-bottom: 20px;
+  }
+
+  h1 { font-size: 1.3rem; text-align: center; color: var(--primary); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+
+  .box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; }
+  .label { font-size: 11px; color: var(--primary); font-weight: bold; display: block; margin-bottom: 8px; }
+  
+  .row { display: flex; gap: 10px; align-items: center; }
+  .input-display { flex: 1; background: transparent; border: none; color: #fff; font-size: 12px; font-family: monospace; outline: none; overflow: hidden; text-overflow: ellipsis; }
+  
+  .copy-btn { background: var(--primary); color: #000; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+  .copy-btn:hover { transform: scale(1.1); }
+
+  /* Toggles for Permissions */
+  .toggle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .toggle-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 10px; font-size: 11px; border: 1px solid rgba(255,255,255,0.05); }
+  
+  .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 18px; }
+  .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+  input:checked + .slider { background-color: var(--primary); }
+  input:checked + .slider:before { transform: translateX(16px); }
+
+  .status-text { font-size: 11px; text-align: center; margin-top: 10px; color: #777; }
+  .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+  .btn-gen { background: var(--primary); color: #000; }
+  .btn-del { background: #ff4b2b; color: #fff; display: none; }
+
+  #toast { position: fixed; bottom: 20px; background: var(--primary); color: #000; padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 12px; display: none; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1><i class="fa-solid fa-server"></i>AHMAD BHAI - QR API</h1>
+
+  <div class="box">
+    <span class="label">ACTIVE API KEY</span>
+    <div class="row">
+      <input type="text" id="apiKey" class="input-display" readonly placeholder="Click generate below">
+      <button class="copy-btn" onclick="copy('apiKey')"><i class="fa-solid fa-copy"></i></button>
+    </div>
+  </div>
+
+  <div class="box">
+    <span class="label">ENDPOINT URL</span>
+    <div class="row">
+      <input type="text" id="apiEndpoint" class="input-display" readonly placeholder="https://...">
+      <button class="copy-btn" onclick="copy('apiEndpoint')"><i class="fa-solid fa-copy"></i></button>
+    </div>
+  </div>
+
+  <div class="box">
+    <span class="label">CUSTOMIZE PERMISSIONS (8 OPTIONS)</span>
+    <div class="toggle-grid">
+      <div class="toggle-item">Website <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="toggle-item">USDT <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="toggle-item">WhatsApp <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="toggle-item">Telegram <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="toggle-item">TikTok <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="toggle-item">Instagram <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="toggle-item">Facebook <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="toggle-item">WiFi QR <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+    </div>
+  </div>
+
+  <button class="btn btn-gen" id="genBtn" onclick="manage('gen')">GENERATE API KEY (Max 3)</button>
+  <button class="btn btn-del" id="delBtn" onclick="manage('del')">DELETE CURRENT KEY</button>
+  
+  <p class="status-text" id="limitText">Keys: 0/3 | Deletes: 0/200</p>
+</div>
+
+<div id="toast">Copied to clipboard!</div>
+
+<script>
+  let storage = JSON.parse(localStorage.getItem('ahmad_api_v1')) || { keys: [], delCount: 0 };
+
+  window.onload = refresh;
+
+  function manage(type) {
+    if(type === 'gen') {
+      if(storage.keys.length >= 3) return showMsg("Limit reached! Max 3 keys allowed.");
+      if(storage.delCount >= 200) return showMsg("System Blocked! Reset LocalStorage.");
+      
+      const newKey = "AB-QR-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+      storage.keys.push(newKey);
+      save();
+      refresh();
+      showMsg("Key Generated!");
+    } else {
+      if(storage.keys.length === 0) return;
+      storage.keys.pop();
+      storage.delCount++;
+      save();
+      refresh();
+      showMsg("Key Deleted!");
+    }
+  }
+
+  function refresh() {
+    const activeKey = storage.keys[storage.keys.length - 1] || "";
+    const endpoint = activeKey ? window.location.origin + "/api/qr?key=" + activeKey + "&data=" : "";
+    
+    document.getElementById('apiKey').value = activeKey;
+    document.getElementById('apiEndpoint').value = endpoint;
+    document.getElementById('delBtn').style.display = activeKey ? 'block' : 'none';
+    document.getElementById('genBtn').style.display = storage.keys.length >= 3 ? 'none' : 'block';
+    document.getElementById('limitText').innerText = `Keys: ${storage.keys.length}/3 | Deletes: ${storage.delCount}/200`;
+  }
+
+  function save() { localStorage.setItem('ahmad_api_v1', JSON.stringify(storage)); }
+
+  function copy(id) {
+    const el = document.getElementById(id);
+    if(!el.value) return;
+    navigator.clipboard.writeText(el.value);
+    showMsg("Copied Successfully!");
+  }
+
+  function showMsg(m) {
+    const t = document.getElementById('toast');
+    t.innerText = m; t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 2000);
+  }
+</script>
+</body>
+</html>
