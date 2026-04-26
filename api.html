@@ -3,32 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AHMAD BHAI - QR API</title>
+<title>AHMAD BHAI - QR API HUB</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   :root { --primary: #00f2fe; --accent: #8646B4; --bg: #050a14; --glass: rgba(255, 255, 255, 0.05); }
   * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
-  body { background: var(--bg); color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+  
+  body { 
+    background: var(--bg); color: white; min-height: 100vh; 
+    display: flex; flex-direction: column; align-items: center; padding: 20px;
+    background-image: radial-gradient(circle at top right, #1a1b3a, transparent);
+  }
 
   .container { 
     background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); 
-    padding: 25px; border-radius: 25px; width: 100%; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin-bottom: 20px;
+    padding: 25px; border-radius: 25px; width: 100%; max-width: 440px; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin-bottom: 20px;
   }
 
-  h1 { font-size: 1.3rem; text-align: center; color: var(--primary); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+  h1 { font-size: 1.3rem; text-align: center; color: var(--primary); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.3); }
 
-  .box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; }
-  .label { font-size: 11px; color: var(--primary); font-weight: bold; display: block; margin-bottom: 8px; }
+  .box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; position: relative; }
+  .label { font-size: 11px; color: var(--primary); font-weight: bold; display: block; margin-bottom: 8px; text-transform: uppercase; }
   
   .row { display: flex; gap: 10px; align-items: center; }
-  .input-display { flex: 1; background: transparent; border: none; color: #fff; font-size: 12px; font-family: monospace; outline: none; overflow: hidden; text-overflow: ellipsis; }
+  .input-display { flex: 1; background: transparent; border: none; color: #fff; font-size: 12px; font-family: 'Courier New', monospace; outline: none; overflow: hidden; text-overflow: ellipsis; }
   
-  .copy-btn { background: var(--primary); color: #000; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-  .copy-btn:hover { transform: scale(1.1); }
+  .copy-btn { background: var(--primary); color: #000; border: none; padding: 10px; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+  .copy-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--primary); }
 
-  /* Toggles for Permissions */
+  /* Toggles Grid */
   .toggle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-  .toggle-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 10px; font-size: 11px; border: 1px solid rgba(255,255,255,0.05); }
+  .toggle-item { 
+    display: flex; justify-content: space-between; align-items: center; 
+    background: rgba(255,255,255,0.02); padding: 10px; border-radius: 12px; 
+    font-size: 11px; border: 1px solid rgba(255,255,255,0.05); 
+  }
   
   .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
   .switch input { opacity: 0; width: 0; height: 0; }
@@ -37,56 +47,78 @@
   input:checked + .slider { background-color: var(--primary); }
   input:checked + .slider:before { transform: translateX(16px); }
 
-  .status-text { font-size: 11px; text-align: center; margin-top: 10px; color: #777; }
-  .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
-  .btn-gen { background: var(--primary); color: #000; }
-  .btn-del { background: #ff4b2b; color: #fff; display: none; }
+  /* Buttons */
+  .btn { width: 100%; padding: 16px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; margin-top: 12px; font-size: 14px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .btn-gen { background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; }
+  .btn-gen:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 242, 254, 0.4); }
+  .btn-del { background: rgba(255, 75, 43, 0.1); color: #ff4b2b; border: 1px solid rgba(255, 75, 43, 0.3); display: none; }
+  .btn-del:hover { background: #ff4b2b; color: #fff; }
 
-  #toast { position: fixed; bottom: 20px; background: var(--primary); color: #000; padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 12px; display: none; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+  /* Documentation Box */
+  .doc-box { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 15px; width: 100%; max-width: 440px; border: 1px solid rgba(255,255,255,0.05); }
+  .doc-title { font-size: 12px; color: var(--primary); font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .code-snippet { background: #000; color: #00ffaa; padding: 12px; border-radius: 10px; font-size: 10px; font-family: monospace; word-break: break-all; line-height: 1.5; border-left: 3px solid var(--primary); }
+
+  .status-text { font-size: 11px; text-align: center; margin-top: 15px; color: #666; letter-spacing: 1px; }
+  #toast { position: fixed; bottom: 30px; background: var(--primary); color: #000; padding: 12px 25px; border-radius: 50px; font-weight: bold; font-size: 12px; display: none; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: fadeInUp 0.3s ease; }
+
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h1><i class="fa-solid fa-server"></i>AHMAD BHAI - QR API</h1>
+  <h1><i class="fa-solid fa-bolt-lightning"></i> QR API TERMINAL</h1>
 
   <div class="box">
-    <span class="label">ACTIVE API KEY</span>
+    <span class="label"><i class="fa-solid fa-key"></i> Active API Key</span>
     <div class="row">
-      <input type="text" id="apiKey" class="input-display" readonly placeholder="Click generate below">
+      <input type="text" id="apiKey" class="input-display" readonly placeholder="No active key found">
       <button class="copy-btn" onclick="copy('apiKey')"><i class="fa-solid fa-copy"></i></button>
     </div>
   </div>
 
   <div class="box">
-    <span class="label">ENDPOINT URL</span>
+    <span class="label"><i class="fa-solid fa-link"></i> Endpoint URL</span>
     <div class="row">
-      <input type="text" id="apiEndpoint" class="input-display" readonly placeholder="https://...">
+      <input type="text" id="apiEndpoint" class="input-display" readonly placeholder="Generate key to see link">
       <button class="copy-btn" onclick="copy('apiEndpoint')"><i class="fa-solid fa-copy"></i></button>
     </div>
   </div>
 
   <div class="box">
-    <span class="label">CUSTOMIZE PERMISSIONS (8 OPTIONS)</span>
+    <span class="label"><i class="fa-solid fa-sliders"></i> API Permissions</span>
     <div class="toggle-grid">
       <div class="toggle-item">Website <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-      <div class="toggle-item">USDT <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="toggle-item">Crypto <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
       <div class="toggle-item">WhatsApp <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
       <div class="toggle-item">Telegram <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
       <div class="toggle-item">TikTok <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-      <div class="toggle-item">Instagram <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="toggle-item">Insta <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
       <div class="toggle-item">Facebook <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
       <div class="toggle-item">WiFi QR <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
     </div>
   </div>
 
-  <button class="btn btn-gen" id="genBtn" onclick="manage('gen')">GENERATE API KEY (Max 3)</button>
-  <button class="btn btn-del" id="delBtn" onclick="manage('del')">DELETE CURRENT KEY</button>
+  <button class="btn btn-gen" id="genBtn" onclick="manage('gen')">
+    <i class="fa-solid fa-plus-circle"></i> GENERATE NEW KEY
+  </button>
+  
+  <button class="btn btn-del" id="delBtn" onclick="manage('del')">
+    <i class="fa-solid fa-trash-can"></i> DELETE CURRENT KEY
+  </button>
   
   <p class="status-text" id="limitText">Keys: 0/3 | Deletes: 0/200</p>
 </div>
 
-<div id="toast">Copied to clipboard!</div>
+<div class="doc-box">
+    <div class="doc-title"><i class="fa-solid fa-circle-info"></i> HOW TO USE API</div>
+    <div class="code-snippet" id="usageCode">
+      // Generate a key to see usage format...
+    </div>
+</div>
+
+<div id="toast">Successfully Copied!</div>
 
 <script>
   let storage = JSON.parse(localStorage.getItem('ahmad_api_v1')) || { keys: [], delCount: 0 };
@@ -95,33 +127,46 @@
 
   function manage(type) {
     if(type === 'gen') {
-      if(storage.keys.length >= 3) return showMsg("Limit reached! Max 3 keys allowed.");
-      if(storage.delCount >= 200) return showMsg("System Blocked! Reset LocalStorage.");
+      if(storage.keys.length >= 3) return showMsg("Limit Reached! Max 3 keys.");
+      if(storage.delCount >= 200) return showMsg("Access Blocked! Too many deletes.");
       
-      const newKey = "AB-QR-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+      // Dynamic Key Generation
+      const newKey = "AB-QR-" + Math.random().toString(36).substr(2, 8).toUpperCase();
       storage.keys.push(newKey);
       save();
       refresh();
-      showMsg("Key Generated!");
+      showMsg("Key Activated! 🚀");
     } else {
       if(storage.keys.length === 0) return;
-      storage.keys.pop();
-      storage.delCount++;
-      save();
-      refresh();
-      showMsg("Key Deleted!");
+      if(confirm("Bhai, kya aap waqayi ye key delete karna chahte hain?")){
+        storage.keys.pop();
+        storage.delCount++;
+        save();
+        refresh();
+        showMsg("Key Removed! 🗑");
+      }
     }
   }
 
   function refresh() {
     const activeKey = storage.keys[storage.keys.length - 1] || "";
-    const endpoint = activeKey ? window.location.origin + "/api/qr?key=" + activeKey + "&data=" : "";
+    const baseUrl = window.location.origin + "/api/qr";
+    const endpoint = activeKey ? `${baseUrl}?key=${activeKey}&data=` : "";
     
     document.getElementById('apiKey').value = activeKey;
     document.getElementById('apiEndpoint').value = endpoint;
-    document.getElementById('delBtn').style.display = activeKey ? 'block' : 'none';
-    document.getElementById('genBtn').style.display = storage.keys.length >= 3 ? 'none' : 'block';
-    document.getElementById('limitText').innerText = `Keys: ${storage.keys.length}/3 | Deletes: ${storage.delCount}/200`;
+    
+    // Update Usage Code
+    const usageBox = document.getElementById('usageCode');
+    if(activeKey) {
+        usageBox.innerText = `fetch("${baseUrl}?key=${activeKey}&data=Hello")\n.then(res => img.src = res.url);`;
+    } else {
+        usageBox.innerText = "// Generate a key to see usage format...";
+    }
+
+    document.getElementById('delBtn').style.display = activeKey ? 'flex' : 'none';
+    document.getElementById('genBtn').style.display = storage.keys.length >= 3 ? 'none' : 'flex';
+    document.getElementById('limitText').innerText = `KEYS: ${storage.keys.length}/3 | DELETES: ${storage.delCount}/200`;
   }
 
   function save() { localStorage.setItem('ahmad_api_v1', JSON.stringify(storage)); }
@@ -130,13 +175,13 @@
     const el = document.getElementById(id);
     if(!el.value) return;
     navigator.clipboard.writeText(el.value);
-    showMsg("Copied Successfully!");
+    showMsg("Copied to Clipboard! ✅");
   }
 
   function showMsg(m) {
     const t = document.getElementById('toast');
     t.innerText = m; t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 2000);
+    setTimeout(() => t.style.display = 'none', 2500);
   }
 </script>
 </body>
